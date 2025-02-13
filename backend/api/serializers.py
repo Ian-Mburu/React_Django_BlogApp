@@ -1,0 +1,1 @@
+# Serializers convert complex data (like model instances) into Python data types, which can be easily converted to JSON or XML. They also handle deserialization—converting incoming data back into model instances after validation.
