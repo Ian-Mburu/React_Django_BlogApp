@@ -45,7 +45,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
 
     # Custom apps
-    'api',
+    'api.apps.ApiConfig',
 
     # Third-part apps
     'corsheaders',

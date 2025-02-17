@@ -22,7 +22,7 @@ class RegisterSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = api_models.User
-        fields = ('email', 'username', 'password', 'password2')
+        fields = ('email', 'full_name', 'password', 'password2')
 
     def validate(self, attr):
         if attr['password'] != attr['password2']:
@@ -34,7 +34,6 @@ class RegisterSerializer(serializers.ModelSerializer):
         user = api_models.User.objects.create(
             full_name = validated_data['full_name'],
             email = validated_data['email'],
-            username = validated_data['username']
         )
 
         email_username, mobile = user.email.split('@')
@@ -125,8 +124,8 @@ class NotificationSerializer(serializers.ModelSerializer):
         else:
             self.Meta.depth = 1
 
-class AuthorSerializer(serializers.ModelSerializer):
-    views = serializers.IntegerField(default=0)
-    likes = serializers.IntegerField(default=0)
-    posts = serializers.SerializerMethodField()
-    bookmarks = serializers.SerializerMethodField()
+class AuthorStats(serializers.Serializer):
+    views = serializers.IntegerField()
+    posts = serializers.IntegerField()
+    likes = serializers.IntegerField()
+    bookmarks = serializers.IntegerField()
