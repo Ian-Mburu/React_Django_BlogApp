@@ -1,0 +1,231 @@
+/* header.css */
+.header-container {
+    background: #1a1a1a;
+    color: white;
+    padding: 1rem 0;
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+}
+
+.nav-content {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 1rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.logo-link {
+    display: block;
+}
+
+.logo-image {
+    width: 200px;
+    height: auto;
+}
+
+.mobile-menu-toggle {
+    display: none;
+}
+
+.mobile-menu-button {
+    display: none;
+    cursor: pointer;
+    padding: 0.5rem;
+}
+
+.hamburger-icon {
+    display: inline-block;
+    width: 25px;
+    height: 2px;
+    background: white;
+    position: relative;
+}
+
+.hamburger-icon::before,
+.hamburger-icon::after {
+    content: '';
+    position: absolute;
+    width: 25px;
+    height: 2px;
+    background: white;
+    left: 0;
+}
+
+.hamburger-icon::before {
+    top: -6px;
+}
+
+.hamburger-icon::after {
+    top: 6px;
+}
+
+.nav-main {
+    display: flex;
+    align-items: center;
+    gap: 2rem;
+}
+
+.search-container {
+    position: relative;
+}
+
+.search-input {
+    padding: 0.5rem 2rem 0.5rem 1rem;
+    border-radius: 20px;
+    border: 1px solid #444;
+    background: #333;
+    color: white;
+    width: 250px;
+}
+
+.search-button {
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #666;
+}
+
+.nav-links {
+    display: flex;
+    gap: 1.5rem;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    align-items: center;
+}
+
+.nav-item {
+    position: relative;
+}
+
+.nav-link, .dropdown-toggle {
+    color: white;
+    text-decoration: none;
+    padding: 0.5rem 1rem;
+    border-radius: 4px;
+    transition: all 0.2s;
+}
+
+.nav-link:hover, .dropdown-toggle:hover {
+    background: #333;
+}
+
+.dropdown-menu {
+    display: none;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    background: #333;
+    border-radius: 4px;
+    padding: 0.5rem;
+    min-width: 200px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+}
+
+.dropdown:hover .dropdown-menu {
+    display: block;
+}
+
+.dropdown-item {
+    display: block;
+    color: white;
+    padding: 0.5rem 1rem;
+    text-decoration: none;
+    transition: background 0.2s;
+}
+
+.dropdown-item:hover {
+    background: #444;
+}
+
+.auth-buttons {
+    display: flex;
+    gap: 1rem;
+    margin-left: 1rem;
+}
+
+.btn-dashboard, .btn-logout,
+.btn-register, .btn-login {
+    padding: 0.5rem 1rem;
+    border-radius: 4px;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    transition: all 0.2s;
+}
+
+.btn-dashboard {
+    background: #4a5568;
+    color: white;
+}
+
+.btn-logout {
+    background: #dc2626;
+    color: white;
+}
+
+.btn-register, .btn-login {
+    background: #2d3748;
+    color: white;
+}
+
+.btn-dashboard:hover, .btn-logout:hover,
+.btn-register:hover, .btn-login:hover {
+    filter: brightness(1.2);
+}
+
+@media (max-width: 768px) {
+    .mobile-menu-button {
+        display: block;
+    }
+
+    .nav-main {
+        display: none;
+        position: absolute;
+        top: 100%;
+        left: 0;
+        right: 0;
+        background: #1a1a1a;
+        flex-direction: column;
+        padding: 1rem;
+    }
+
+    #mobile-menu-toggle:checked ~ .nav-main {
+        display: flex;
+    }
+
+    .nav-links {
+        flex-direction: column;
+        width: 100%;
+    }
+
+    .search-container {
+        width: 100%;
+    }
+
+    .search-input {
+        width: 100%;
+    }
+
+    .dropdown-menu {
+        position: static;
+        background: #222;
+        box-shadow: none;
+    }
+
+    .auth-buttons {
+        flex-direction: column;
+        width: 100%;
+    }
+
+    .btn-dashboard, .btn-logout,
+    .btn-register, .btn-login {
+        width: 100%;
+        justify-content: center;
+    }
+}
