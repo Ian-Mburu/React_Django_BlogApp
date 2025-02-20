@@ -37,15 +37,18 @@ function App() {
             <Route path="/logout" element={<Logout />} />
             <Route path="/forgot-password" element={<ForgotPassword />} />
             <Route path="/create-password" element={<CreatePassword />} />
-  
-            {/* Dashboard nested routes */}
+            <Route path="/posts" element={<Posts />} />
+            <Route path="/add-post" element={<AddPost />} />
+            <Route path="/comments" element={<Comments />} />
+            <Route path="edit-post/:id" element={<EditPost />} />
+            <Route path="notifications" element={<Notifications />} />
+            <Route path="profile" element={<Profile />} />
+            <Route path="/posts" element={<Posts />} /> 
+
+
             <Route path="/dashboard" element={<Dashboard />}>
-              <Route index element={<Posts />} />  {/* This replaces the path="/" */}
-              <Route path="add-post" element={<AddPost />} />
-              <Route path="edit-post/:id" element={<EditPost />} />
-              <Route path="comments" element={<Comments />} />
-              <Route path="notifications" element={<Notifications />} />
-              <Route path="profile" element={<Profile />} />
+              
+              
             </Route>
           </Routes>
         </MainWrapper>

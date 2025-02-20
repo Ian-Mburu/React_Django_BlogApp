@@ -1,3 +1,4 @@
+from tokenize import TokenError
 from django.shortcuts import render
 from django.http import JsonResponse
 from django.core.mail import EmailMultiAlternatives
@@ -360,3 +361,16 @@ class DashboardPostEditAPIView(generics.RetrieveUpdateDestroyAPIView):
     "category_id": 1,
     "post_status": "Active"
 }
+
+class TokenRefreshView(APIView):
+    def post(self, request):
+        refresh_token = request.data.get('refresh')
+        
+        if not refresh_token:
+            return Response({"detail": "Refresh token required"}, status=400)
+            
+        try:
+            RefreshToken(refresh_token).verify()
+            # ... rest of your refresh logic
+        except TokenError as e:
+            return Response({"detail": str(e)}, status=401)

@@ -1,0 +1,119 @@
+/* General styles */
+.posts-container {
+    padding: 20px;
+    font-family: Arial, sans-serif;
+    background-color: #f8f9fa;
+}
+
+.card {
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.card-header {
+    background-color: #fff;
+    border-bottom: 2px solid #ddd;
+    padding: 15px;
+}
+
+.card-header h5 {
+    font-size: 20px;
+    font-weight: bold;
+    color: #333;
+}
+
+/* Search and filter */
+.search-container {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 15px;
+}
+
+.search-container input {
+    width: 100%;
+    padding: 8px 12px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+.search-container select {
+    padding: 8px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    background-color: #fff;
+}
+
+/* Table Styles */
+.table-container {
+    overflow-x: auto;
+}
+
+.table {
+    width: 100%;
+    background-color: white;
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.table th {
+    background-color: #343a40;
+    color: white;
+    padding: 12px;
+}
+
+.table td {
+    padding: 10px;
+    text-align: center;
+}
+
+.table img {
+    width: 80px;
+    height: 80px;
+    object-fit: cover;
+    border-radius: 8px;
+}
+
+/* Buttons */
+.btn {
+    padding: 6px 12px;
+    border-radius: 5px;
+    font-size: 14px;
+}
+
+.btn-primary {
+    background-color: #007bff;
+    border: none;
+}
+
+.btn-danger {
+    background-color: #dc3545;
+    border: none;
+}
+
+.btn-round {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    color: white;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .search-container {
+        flex-direction: column;
+    }
+
+    .table img {
+        width: 60px;
+        height: 60px;
+    }
+
+    .btn {
+        font-size: 12px;
+        padding: 4px 8px;
+    }
+}

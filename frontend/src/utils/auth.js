@@ -100,57 +100,76 @@ export const logout = () => {
 
 // Function to set the authenticated user on page load
 export const setUser = async () => {
-    // Retrieving access and refresh tokens from cookies
     const accessToken = Cookies.get("access_token");
     const refreshToken = Cookies.get("refresh_token");
+    const authStore = useAuthStore.getState();
 
-    // Checking if tokens are present
     if (!accessToken || !refreshToken) {
+        authStore.setLoading(false);
         return;
     }
 
-    // If access token is expired, refresh it; otherwise, set the authenticated user
-    if (isAccessTokenExpired(accessToken)) {
-        const response = await getRefreshToken(refreshToken);
-        setAuthUser(response.access, response.refresh);
-    } else {
-        setAuthUser(accessToken, refreshToken);
+    try {
+        if (isAccessTokenExpired(accessToken)) {
+            const response = await getRefreshToken();
+            setAuthUser(response.access, response.refresh);
+        } else {
+            setAuthUser(accessToken, refreshToken);
+        }
+    } catch (error) {
+        authStore.setLoading(false);
+        authStore.setUser(null);
+        console.error("Token refresh failed:", error);
     }
 };
 
 // Function to set the authenticated user and update user state
 export const setAuthUser = (access_token, refresh_token) => {
-    // Setting access and refresh tokens in cookies with expiration dates
+    const isProduction = process.env.NODE_ENV === 'production';
+    
     Cookies.set("access_token", access_token, {
-        expires: 1, // Access token expires in 1 day
-        secure: true,
+        expires: 1,
+        secure: isProduction,
+        sameSite: 'Strict'
     });
 
     Cookies.set("refresh_token", refresh_token, {
-        expires: 7, // Refresh token expires in 7 days
-        secure: true,
+        expires: 7,
+        secure: isProduction,
+        sameSite: 'Strict'
     });
 
-    // Decoding access token to get user information
-    const user = jwtDecode(access_token) ?? null;
-
-    // If user information is present, update user state; otherwise, set loading state to false
-    if (user) {
+    try {
+        const user = jwtDecode(access_token);
         useAuthStore.getState().setUser(user);
+    } catch (error) {
+        console.error("Token decoding error:", error);
+        useAuthStore.getState().setUser(null);
     }
+    
     useAuthStore.getState().setLoading(false);
 };
 
 // Function to refresh the access token using the refresh token
 export const getRefreshToken = async () => {
-    // Retrieving refresh token from cookies and making a POST request to refresh the access token
-    const refresh_token = Cookies.get("refresh_token");
-    const response = await axios.post("user/token/refresh/", {
-        refresh: refresh_token,
-    });
-
-    // Returning the refreshed access token
-    return response.data;
+    try {
+        const refresh_token = Cookies.get("refresh_token");
+        if (!refresh_token) {
+            throw new Error("No refresh token available");
+        }
+        
+        const response = await axios.post("user/token/refresh/", {
+            refresh: refresh_token
+        });
+        
+        return response.data;
+    } catch (error) {
+        // Clear invalid tokens and logout user
+        Cookies.remove("access_token");
+        Cookies.remove("refresh_token");
+        useAuthStore.getState().setUser(null);
+        throw error; // Re-throw to handle in calling function
+    }
 };
 
 // Function to check if the access token is expired

@@ -75,11 +75,7 @@ function Home() {
         <div>
             <Header />
             <div className="home-container">
-                <section className="section-header">
-                    <h2>Trending Articles 🔥</h2>
-                    <img src="assets/images/adv-3.png" alt="Trending articles" className="header-image" />
-                </section>
-
+                
                 <section>
                     <div className="grid-container">
                         {postItems?.map((p, index) => (

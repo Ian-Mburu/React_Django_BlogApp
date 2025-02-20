@@ -1,6 +1,5 @@
-/* header.css */
 .header-container {
-    background: #1a1a1a;
+    background: #ff000080;
     color: white;
     padding: 1rem 0;
     position: sticky;
@@ -18,48 +17,20 @@
 }
 
 .logo-link {
-    display: block;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    text-decoration: none;
+    color: white;
+    font-weight: bold;
+    font-size: 22px;
+    font-family: italic;
 }
 
-.logo-image {
-    width: 200px;
+.logo-img {
+    width: 50px;
     height: auto;
-}
-
-.mobile-menu-toggle {
-    display: none;
-}
-
-.mobile-menu-button {
-    display: none;
-    cursor: pointer;
-    padding: 0.5rem;
-}
-
-.hamburger-icon {
-    display: inline-block;
-    width: 25px;
-    height: 2px;
-    background: white;
-    position: relative;
-}
-
-.hamburger-icon::before,
-.hamburger-icon::after {
-    content: '';
-    position: absolute;
-    width: 25px;
-    height: 2px;
-    background: white;
-    left: 0;
-}
-
-.hamburger-icon::before {
-    top: -6px;
-}
-
-.hamburger-icon::after {
-    top: 6px;
+    margin-right: 0.5rem;
 }
 
 .nav-main {
@@ -75,7 +46,7 @@
 .search-input {
     padding: 0.5rem 2rem 0.5rem 1rem;
     border-radius: 20px;
-    border: 1px solid #444;
+    border: none;
     background: #333;
     color: white;
     width: 250px;
@@ -91,7 +62,7 @@
 
 .nav-links {
     display: flex;
-    gap: 1.5rem;
+    gap: 10px;
     list-style: none;
     margin: 0;
     padding: 0;
@@ -111,7 +82,7 @@
 }
 
 .nav-link:hover, .dropdown-toggle:hover {
-    background: #333;
+    color: #00000080;
 }
 
 .dropdown-menu {
@@ -119,11 +90,12 @@
     position: absolute;
     top: 100%;
     left: 0;
-    background: #333;
     border-radius: 4px;
     padding: 0.5rem;
     min-width: 200px;
     box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+    list-style: none;
+    color: #000000;
 }
 
 .dropdown:hover .dropdown-menu {
@@ -132,14 +104,14 @@
 
 .dropdown-item {
     display: block;
-    color: white;
+    color: rgb(0, 0, 0);
     padding: 0.5rem 1rem;
     text-decoration: none;
     transition: background 0.2s;
 }
 
 .dropdown-item:hover {
-    background: #444;
+    color: #444;
 }
 
 .auth-buttons {
@@ -160,8 +132,11 @@
 }
 
 .btn-dashboard {
-    background: #4a5568;
     color: white;
+}
+
+.btn-dashboard:hover {
+    color: #444;
 }
 
 .btn-logout {
