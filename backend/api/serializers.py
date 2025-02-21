@@ -83,8 +83,27 @@ class CommentSerializer(serializers.ModelSerializer):
 
 # whats happening here is that we are creating a CommentSerializer class that extends the ModelSerializer class. We are adding the depth field to the serializer. We are also setting the depth field to 0 when creating a new comment instance and 1 when updating an existing comment instance.
 
+# serializers.py
 class PostSerializer(serializers.ModelSerializer):
+    likes_count = serializers.SerializerMethodField()
+    has_liked = serializers.SerializerMethodField()
 
+    class Meta:
+        model = api_models.Post
+        fields = [
+            'id', 'title', 'slug', 'description', 'image', 
+            'status', 'view', 'likes_count', 'has_liked',
+            'date', 'category', 'user', 'profile'
+        ]
+
+    def get_likes_count(self, obj):
+        return obj.likes.count()
+
+    def get_has_liked(self, obj):
+        request = self.context.get('request')
+        if request and request.user.is_authenticated:
+            return obj.likes.filter(id=request.user.id).exists()
+        return False
     class Meta:
         model = api_models.Post
         fields = ('__all__')

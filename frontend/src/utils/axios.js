@@ -16,5 +16,15 @@ const apiInstance = axios.create({
     },
 });
 
+apiInstance.interceptors.request.use(config => {
+    const token = localStorage.getItem('access_token');
+    if (token) {
+        config.headers.Authorization = `Bearer ${token}`;
+    }
+    return config}, 
+    error => {
+        return Promise.reject(error);
+    }
+);
 // Export the 'apiInstance' so that it can be used in other parts of the codebase. Other modules can import and use this Axios instance for making API requests.
 export default apiInstance;

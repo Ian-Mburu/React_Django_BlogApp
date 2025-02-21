@@ -74,6 +74,11 @@ class PostListAPIView(generics.ListAPIView):
     def get_queryset(self):
         return api_models.Post.objects.all()
     
+    def get_serializer_context(self):
+        context = super().get_serializer_context()
+        context['request'] = self.request
+        return context
+    
 class PostDetailAPIView(generics.RetrieveAPIView):
     serializer_class = api_serializer.PostSerializer
     permission_classes = [AllowAny]
@@ -86,31 +91,31 @@ class PostDetailAPIView(generics.RetrieveAPIView):
         return post
 # whats happening here is that We are overriding the get_object method to get the slug from the url kwargs and get the post object from the database. We are then incrementing the view count for the post object and saving it to the database. We are then returning the post object.
 
+# views.py (LikePostAPIView)
+# views.py
 class LikePostAPIView(APIView):
+    permission_classes = [IsAuthenticated]  # Require authentication
     
     def post(self, request):
-        user_id = request.data['user_id']
-        post_id = request.data['post_id']
+        try:
+            post_id = request.data.get('post_id')
+            post = api_models.Post.objects.get(id=post_id)
+            user = request.user  # Get user from authentication
 
-        user = api_models.User.objects.get(id=user_id)
-        post = api_models.Post.objects.get(id=post_id)
-
-        # Check if post has already been liked by this user
-        if user in post.likes.all():
-            # If liked, unlike post
-            post.likes.remove(user)
-            return Response({"message": "Post Disliked"}, status=status.HTTP_200_OK)
-        else:
-            # If post hasn't been liked, like the post by adding user to set of poeple who have liked the post
-            post.likes.add(user)
-            
-            # Create Notification for Author
-            api_models.Notification.objects.create(
-                user=post.user,
-                post=post,
-                type="Like",
-            )
-            return Response({"message": "Post Liked"}, status=status.HTTP_201_CREATED)
+            if post.likes.filter(id=user.id).exists():
+                post.likes.remove(user)
+                return Response({"message": "Post Disliked"}, status=status.HTTP_200_OK)
+            else:
+                post.likes.add(user)
+                api_models.Notification.objects.create(
+                    user=post.user,
+                    post=post,
+                    type="Like",
+                )
+                return Response({"message": "Post Liked"}, status=status.HTTP_201_CREATED)
+                
+        except api_models.Post.DoesNotExist:
+            return Response({"error": "Post not found"}, status=status.HTTP_404_NOT_FOUND)
 # whats happening here is that We are creating a LikePostAPIView class that extends the APIView class. We are adding a post method to handle the post request. We are getting the user_id and post_id from the request data. We are then getting the user and post objects from the database. We are then checking if the post has already been liked by the user. If the post has already been liked, we are unliking the post by removing the user from the set of people who have liked the post. If the post hasn't been liked, we are liking the post by adding the user to the set of people who have liked the post. We are also creating a notification for the author of the post.
 
 class PostCommentAPIView(generics.CreateAPIView):
@@ -139,7 +144,7 @@ class PostCommentAPIView(generics.CreateAPIView):
 
 class BookMarkPostAPIView(APIView):
     serializer_class = api_serializer.BookmarkSerializer
-    permission_classes = [AllowAny]
+    permission_classes = [IsAuthenticated]
     
     def post(self, request):
         try:

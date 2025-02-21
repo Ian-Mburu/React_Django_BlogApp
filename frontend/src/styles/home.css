@@ -68,7 +68,7 @@ body {
 .card-actions {
     display: flex;
     align-items: center;
-    gap: 10px;
+    gap: 170px;
     margin-top: 10px;
 }
 
@@ -86,7 +86,7 @@ body {
 
 .like-count {
     font-size: 14px;
-    color: #666;
+    color: #e41313;
 }
 
 .card-meta {
@@ -167,4 +167,21 @@ body {
     border-radius: 50%;
     object-fit: cover;
     margin-bottom: 10px;
+}
+
+
+.icon-btn.liked {
+    color: #4299e1;
+    fill: #4299e1;
+}
+
+/* styles/home.css */
+.liked {
+    color: #4299e1 !important;
+    fill: #4299e1 !important;
+}
+
+.like-count {
+    margin-left: 5px;
+    font-size: 0.9rem;
 }

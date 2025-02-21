@@ -7,21 +7,19 @@ import apiInstance from "../../utils/axios";
 import useUserData from "../../Plugin/useUserData";
 import Toast from "../../Plugin/Toast";
 import "../../styles/home.css";
+import { CiBookmark } from "react-icons/ci";
+import { MdOutlineThumbUp } from "react-icons/md";
+
+
 
 function Home() {
     const [posts, setPosts] = useState([]);
     const userData = useUserData();
-    const [popularPosts, setPopularPosts] = useState([]);
     const [category, setCategory] = useState([]);
 
     const fetchPosts = async () => {
         const response = await apiInstance.get(`post/lists/`);
         setPosts(response.data);
-    };
-
-    const fetchPopularPost = () => {
-        const sortedPopularPost = posts?.sort((a, b) => b.view - a.view);
-        setPopularPosts(sortedPopularPost);
     };
 
     const fetchCategory = async () => {
@@ -34,9 +32,6 @@ function Home() {
         fetchCategory();
     }, []);
 
-    useEffect(() => {
-        fetchPopularPost();
-    }, [posts]);
 
     // Pagination
     const itemsPerPage = 4;
@@ -91,10 +86,10 @@ function Home() {
                                     </h3>
                                     <div className="card-actions">
                                         <button type="button" onClick={() => handleBookmarkPost(p.id)} className="icon-btn">
-                                            <i className="fas fa-bookmark"></i>
+                                        <CiBookmark />
                                         </button>
                                         <button onClick={() => handleLikePost(p.id)} className="icon-btn">
-                                            <i className="fas fa-thumbs-up"></i>
+                                        <MdOutlineThumbUp />
                                         </button>
                                         <span className="like-count">{p.likes?.length}</span>
                                     </div>
@@ -158,18 +153,6 @@ function Home() {
                     </div>
                 </section>
 
-                <section className="section-header">
-                    <h2>Popular Articles 🕒</h2>
-                    <img src="assets/images/adv-3.png" alt="Popular articles" className="header-image" />
-                </section>
-
-                <div className="grid-container">
-                    {popularPosts?.map((p, index) => (
-                        <div className="grid-card" key={index}>
-                            {/* Popular posts card content same as trending posts */}
-                        </div>
-                    ))}
-                </div>
             </div>
             <Footer />
         </div>
