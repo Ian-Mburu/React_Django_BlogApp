@@ -127,17 +127,13 @@ export const setUser = async () => {
 export const setAuthUser = (access_token, refresh_token) => {
     const isProduction = process.env.NODE_ENV === 'production';
     
-    Cookies.set("access_token", access_token, {
-        expires: 1,
-        secure: isProduction,
-        sameSite: 'Strict'
-    });
+    // Store tokens in cookies
+    Cookies.set("access_token", access_token, { secure: true });
+    Cookies.set("refresh_token", refresh_token, { secure: true });
 
-    Cookies.set("refresh_token", refresh_token, {
-        expires: 7,
-        secure: isProduction,
-        sameSite: 'Strict'
-    });
+    // Also store in localStorage for immediate access
+    localStorage.setItem('access_token', access_token);
+    localStorage.setItem('refresh_token', refresh_token);
 
     try {
         const user = jwtDecode(access_token);

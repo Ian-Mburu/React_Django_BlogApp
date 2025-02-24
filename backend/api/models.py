@@ -79,7 +79,7 @@ class Category(models.Model):
         super(Category, self).save(*args, **kwargs)
 
     def post_count(self):
-        return Post.objects.filter(Category=self).count()
+        return Post.objects.filter(category=self).count()
 
 # Slugify - The slugify() function is used to convert a string into a valid slug. A slug is a simplified version of a string, typically URL-friendly. The slugify() function converts the string into lowercase, removes spaces, and replaces special characters with hyphens. The slugify() function is commonly used to generate slugs for URLs, filenames, and other identifiers.
 
@@ -93,7 +93,7 @@ class Post(models.Model):
 
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     profile = models.ForeignKey(Profile, on_delete=models.CASCADE, null=True, blank=True)
-    Category = models.ForeignKey(Category, on_delete=models.CASCADE, null=True, blank=True)
+    category = models.ForeignKey(Category, on_delete=models.CASCADE, null=True, blank=True)
     title = models.CharField(max_length=150)
     description = models.TextField(null=True, blank=True)
     image = models.ImageField(upload_to='image', null=True, blank=True)

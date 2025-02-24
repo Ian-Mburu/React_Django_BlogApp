@@ -72,6 +72,11 @@ body {
     margin-top: 10px;
 }
 
+.like-bookmark {
+    display: flex;
+    gap: 10px;
+}
+
 .icon-btn {
     background: none;
     border: none;
@@ -175,13 +180,23 @@ body {
     fill: #4299e1;
 }
 
-/* styles/home.css */
+
+/* Loading spinner */
+.spinner {
+    width: 18px;
+    height: 18px;
+    border: 2px solid #f3f3f3;
+    border-top: 2px solid #4299e1;
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
 .liked {
     color: #4299e1 !important;
     fill: #4299e1 !important;
-}
-
-.like-count {
-    margin-left: 5px;
-    font-size: 0.9rem;
 }

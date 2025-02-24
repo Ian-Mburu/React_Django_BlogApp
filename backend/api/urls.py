@@ -13,7 +13,7 @@ urlpatterns = [
     path('category/', api_views.CategoryListAPIView.as_view()),
     path('category/<slug:slug>/', api_views.CategoryListAPIView.as_view()),
     path('post/category/list/', api_views.CategoryListAPIView.as_view()),
-    path('post/category/posts/<category_slug>/', api_views.PostCategoryListAPIView.as_view()),
+    path('post/detail/<slug:slug>/', api_views.PostDetailAPIView.as_view()),
     path('post/lists/', api_views.PostListAPIView.as_view()),
     path('post/detail/<slug>/', api_views.PostDetailAPIView.as_view()),
     path('post/like-post/', api_views.LikePostAPIView.as_view()),

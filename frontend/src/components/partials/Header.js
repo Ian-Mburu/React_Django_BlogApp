@@ -34,7 +34,7 @@ function Header() {
                                 <Link className="nav-link" to="/">Home</Link>
                             </li>
                             <li className="nav-item">
-                                <Link className="nav-link" to="/category">Category</Link>
+                                <Link className="nav-link" to="/categories">Category</Link>
                             </li>
                             
                             <li className="nav-item dropdown">

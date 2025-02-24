@@ -16,6 +16,8 @@ function Home() {
     const [posts, setPosts] = useState([]);
     const userData = useUserData();
     const [category, setCategory] = useState([]);
+    const [isLiking, setIsLiking] = useState(false);
+
 
     const fetchPosts = async () => {
         const response = await apiInstance.get(`post/lists/`);
@@ -34,7 +36,7 @@ function Home() {
 
 
     // Pagination
-    const itemsPerPage = 4;
+    const itemsPerPage = 50;
     const [currentPage, setCurrentPage] = useState(1);
     const indexOfLastItem = currentPage * itemsPerPage;
     const indexOfFirstItem = indexOfLastItem - itemsPerPage;
@@ -43,29 +45,48 @@ function Home() {
     const pageNumbers = Array.from({ length: totalPages }, (_, index) => index + 1);
 
     const handleLikePost = async (postId) => {
-        const jsonData = {
-            user_id: userData?.user_id,
-            post_id: postId,
-        };
-        const response = await apiInstance.post(`post/like-post/`, jsonData);
-        console.log(response.data);
-        fetchPosts();
-
-        Toast("success", response.data.message, "");
+        try {
+            const response = await apiInstance.post(`post/like-post/`, {
+                post_id: postId  // Remove user_id
+            });
+            
+            // Update local state immediately
+            setPosts(prevPosts => prevPosts.map(post => 
+                post.id === postId ? {
+                    ...post,
+                    likes_count: response.data.likes_count,
+                    has_liked: response.data.action === 'liked'
+                } : post
+            ));
+    
+            Toast("success", response.data.message, "");
+        } catch (error) {
+            console.error("Like error:", error);
+            if (error.response?.status === 401) {
+                Toast("error", "Session expired. Please login again", "");
+            } else {
+                Toast("error", "Failed to like post", "");
+            }
+        }
     };
 
     const handleBookmarkPost = async (postId) => {
-        const jsonData = {
-            user_id: userData?.user_id,
-            post_id: postId,
-        };
-        const response = await apiInstance.post(`post/bookmark-post/`, jsonData);
-        console.log(response.data);
-        fetchPosts();
-
-        Toast("success", response.data.message, "");
+        try {
+            const response = await apiInstance.post(`post/bookmark-post/`, {
+                post_id: postId  // Remove user_id
+            });
+            fetchPosts();
+            Toast("success", response.data.message, "");
+        } catch (error) {
+            console.error("Bookmark error:", error);
+            if (error.response?.status === 401) {
+                Toast("error", "Please login to bookmark posts", "");
+            } else {
+                Toast("error", "Failed to bookmark post", "");
+            }
+        }
     };
-
+    
     return (
         <div>
             <Header />
@@ -75,14 +96,15 @@ function Home() {
                     <div className="grid-container">
                         {postItems?.map((p, index) => (
                             <div className="grid-card" key={index}>
+                                <Link to={`detail/${p.slug}`} className="card-link">
                                 <div className="card-image-container">
                                     <img className="card-image" src={p.image} alt={p.title} />
                                 </div>
                                 <div className="card-content">
                                     <h3 className="card-title">
-                                        <Link to={`${p.slug}`} className="card-link">
+                                        
                                             {p.title?.slice(0, 32) + "..."}
-                                        </Link>
+                                        
                                     </h3>
                                     <div className="card-actions">
                                         <button type="button" onClick={() => handleBookmarkPost(p.id)} className="icon-btn">
@@ -91,7 +113,7 @@ function Home() {
                                         <button onClick={() => handleLikePost(p.id)} className="icon-btn">
                                         <MdOutlineThumbUp />
                                         </button>
-                                        <span className="like-count">{p.likes?.length}</span>
+                                        <p style={{color: '#000'}}>{p.likes?.length} Likes</p>
                                     </div>
                                     <ul className="card-meta">
                                         <li>
@@ -105,6 +127,7 @@ function Home() {
                                         </li>
                                     </ul>
                                 </div>
+                                </Link>
                             </div>
                         ))}
                     </div>

@@ -1,32 +1,45 @@
 import { useState, useEffect } from "react";
-import Header from "../partials/Header";
-import Footer from "../partials/Footer";
 import { Link, useParams } from "react-router-dom";
 import moment from "moment";
 import apiInstance from "../../utils/axios";
-import "../../styles/category.css"; // Create this CSS file
+import Header from "../partials/Header";
+import Footer from "../partials/Footer";
+import "../../styles/category.css";
 
 function Category() {
     const [posts, setPosts] = useState([]);
-    const param = useParams();
-
-    const fetchPosts = async () => {
-        const response = await apiInstance.get(`post/category/posts/${param.slug}/`);
-        setPosts(response.data);
-    };
-
+    const [category, setCategory] = useState(null);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
+    const { slug } = useParams();
+  
     useEffect(() => {
-        fetchPosts();
-    }, []);
+      const fetchData = async () => {
+        try {
+          const [categoryRes, postsRes] = await Promise.all([
+            apiInstance.get(`category/${slug}/`),
+            apiInstance.get(`post/category/posts/${slug}/`)
+          ]);
+          
+          if (!categoryRes.data.length || !postsRes.data.length) {
+            throw new Error('Category not found');
+          }
+  
+          setCategory(categoryRes.data[0]);
+          setPosts(postsRes.data);
+        } catch (err) {
+          setError(err.message);
+        } finally {
+          setLoading(false);
+        }
+      };
+  
+      fetchData();
+    }, [slug]);
 
-    // Pagination
-    const itemsPerPage = 4;
-    const [currentPage, setCurrentPage] = useState(1);
-    const indexOfLastItem = currentPage * itemsPerPage;
-    const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-    const postItems = posts.slice(indexOfFirstItem, indexOfLastItem);
-    const totalPages = Math.ceil(posts.length / itemsPerPage);
-    const pageNumbers = Array.from({ length: totalPages }, (_, index) => index + 1);
+
+    if (loading) return <div className="loading">Loading...</div>;
+    if (error) return <div className="error">Error: {error}</div>;
 
     return (
         <div className="category-container">
@@ -34,68 +47,60 @@ function Category() {
             
             <section className="category-header">
                 <div className="header-content">
-                    <img src="assets/images/adv-3.png" alt="Category header" className="header-image" />
+                    {category?.image && (
+                        <img 
+                            src={category.image} 
+                            alt={category.title} 
+                            className="header-image"
+                        />
+                    )}
                     <h2 className="category-title">
-                        <i className="fas fa-th-large"></i> {posts[0]?.category?.title} ({posts.length} Articles)
+                        <i className="fas fa-th-large"></i> 
+                        {category?.title} ({posts.length} Articles)
                     </h2>
                 </div>
             </section>
 
             <section className="posts-section">
                 <div className="posts-grid">
-                    {postItems?.map((p, index) => (
-                        <div className="post-card" key={index}>
+                    {posts.map((post) => (
+                        <div className="post-card" key={post.id}>
                             <div className="card-image-container">
-                                <img className="card-image" src={p.image} alt={p.title} />
+                                <img 
+                                    src={post.image} 
+                                    alt={post.title} 
+                                    className="card-image"
+                                />
                             </div>
                             <div className="card-content">
                                 <h3 className="card-title">
-                                    <Link to={`${p.slug}`} className="card-link">
-                                        {p.title?.slice(0, 32) + "..."}
+                                    <Link to={`/post/${post.slug}`} className="card-link">
+                                        {post.title}
                                     </Link>
                                 </h3>
-                                <ul className="post-meta">
-                                    <li>
-                                        <i className="fas fa-user"></i> {p?.profile?.full_name}
-                                    </li>
-                                    <li>
-                                        <i className="fas fa-calendar"></i> {moment(p.date).format("DD MMM, YYYY")}
-                                    </li>
-                                    <li>
-                                        <i className="fas fa-eye"></i> {p.view} Views
-                                    </li>
-                                </ul>
+                                <div className="post-meta">
+                                    <span>
+                                        <i className="fas fa-user"></i> {post.user?.full_name}
+                                    </span>
+                                    <span>
+                                        <i className="fas fa-calendar"></i> 
+                                        {moment(post.date).format("MMM DD, YYYY")}
+                                    </span>
+                                    <span>
+                                        <i className="fas fa-eye"></i> {post.view} Views
+                                    </span>
+                                </div>
+                                <div className="post-stats">
+                                    <span>
+                                        <i className="fas fa-heart"></i> {post.likes_count}
+                                    </span>
+                                    <span>
+                                        <i className="fas fa-comment"></i> {post.comments_count}
+                                    </span>
+                                </div>
                             </div>
                         </div>
                     ))}
-                </div>
-
-                <div className="pagination">
-                    <button 
-                        className={`pagination-button ${currentPage === 1 ? "disabled" : ""}`}
-                        onClick={() => setCurrentPage(currentPage - 1)}
-                        disabled={currentPage === 1}
-                    >
-                        Previous
-                    </button>
-                    
-                    {pageNumbers.map((number) => (
-                        <button
-                            key={number}
-                            className={`pagination-button ${currentPage === number ? "active" : ""}`}
-                            onClick={() => setCurrentPage(number)}
-                        >
-                            {number}
-                        </button>
-                    ))}
-                    
-                    <button 
-                        className={`pagination-button ${currentPage === totalPages ? "disabled" : ""}`}
-                        onClick={() => setCurrentPage(currentPage + 1)}
-                        disabled={currentPage === totalPages}
-                    >
-                        Next
-                    </button>
                 </div>
             </section>
 

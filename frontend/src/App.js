@@ -17,6 +17,8 @@ import EditPost from "./components/dashboard/EditPost";
 import Comments from "./components/dashboard/Comments";
 import Notifications from "./components/dashboard/Notifications";
 import Profile from "./components/dashboard/Profile";
+import CategoryListPage from "./components/core/CategoryListPage.js";
+import PostDetail from "./components/core/PostDetail";
 
 import MainWrapper from "./Layouts/MainWrapper";
 
@@ -29,7 +31,8 @@ function App() {
             <Route path="/" element={<Home />} />
             <Route path="/detail/:slug" element={<Detail />} />
             <Route path="/search" element={<Search />} />
-            <Route path="/category/:slug" element={<Category />} />
+            <Route path="/detail/:slug" element={<PostDetail />} />
+            <Route path="/categories" element={<CategoryListPage />} />
             <Route path="/about" element={<About />} />
             <Route path="/contact" element={<Contact />} />
             <Route path="/register" element={<Register />} />

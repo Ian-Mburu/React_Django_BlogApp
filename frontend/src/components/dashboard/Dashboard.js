@@ -84,7 +84,7 @@ function Dashboard() {
                                 <div key={index} className="post-item">
                                     <img src={p.image} alt="product" className="post-image" />
                                     <div className="post-info">
-                                        <a href="#" className="post-title">{p.title}</a>
+                                        <Link to={`/post/${p.id}`} className="post-title">{p.title}</Link>
                                         <p>{moment(p.date).format("DD MMM, YYYY")}</p>
                                         <p>{p.view} Views</p>
                                         <p>{p.likes?.length} Likes</p>

@@ -63,9 +63,9 @@ class PostCategoryListAPIView(generics.ListAPIView):
     permission_classes = [AllowAny,]
 
     def get_queryset(self):
-        category_slug = self.kwargs['category_slug']
+        category_slug = self.kwargs.get('category_slug')
         category = api_models.Category.objects.get(slug=category_slug)
-        return api_models.Post.objects.filter(category=category, status='active')
+        return api_models.Post.objects.filter(category=category, status='Active')
     
 class PostListAPIView(generics.ListAPIView):
     serializer_class = api_serializer.PostSerializer
@@ -79,41 +79,50 @@ class PostListAPIView(generics.ListAPIView):
         context['request'] = self.request
         return context
     
+# views.py
+from django.http import Http404
+
+# views.py
+from django.http import Http404
+
 class PostDetailAPIView(generics.RetrieveAPIView):
     serializer_class = api_serializer.PostSerializer
     permission_classes = [AllowAny]
 
     def get_object(self):
         slug = self.kwargs['slug']
-        post = api_models.Post.objects.get(slug=slug, status="Active")
-        post.view += 1
-        post.save()
-        return post
+        try:
+            post = api_models.Post.objects.get(slug=slug, status="Active")
+            post.view += 1
+            post.save()
+            return post
+        except api_models.Post.DoesNotExist:
+            raise Http404("Post not found")
 # whats happening here is that We are overriding the get_object method to get the slug from the url kwargs and get the post object from the database. We are then incrementing the view count for the post object and saving it to the database. We are then returning the post object.
 
 # views.py (LikePostAPIView)
 # views.py
 class LikePostAPIView(APIView):
-    permission_classes = [IsAuthenticated]  # Require authentication
+    permission_classes = [IsAuthenticated]
     
     def post(self, request):
         try:
-            post_id = request.data.get('post_id')
-            post = api_models.Post.objects.get(id=post_id)
-            user = request.user  # Get user from authentication
+            post = api_models.Post.objects.get(id=request.data.get('post_id'))
+            user = request.user
 
             if post.likes.filter(id=user.id).exists():
                 post.likes.remove(user)
-                return Response({"message": "Post Disliked"}, status=status.HTTP_200_OK)
+                action = 'disliked'
             else:
                 post.likes.add(user)
-                api_models.Notification.objects.create(
-                    user=post.user,
-                    post=post,
-                    type="Like",
-                )
-                return Response({"message": "Post Liked"}, status=status.HTTP_201_CREATED)
-                
+                action = 'liked'
+
+            return Response({
+                "message": f"Post {action} successfully",
+                "action": action,
+                "likes_count": post.likes.count()
+            }, status=status.HTTP_200_OK)
+
         except api_models.Post.DoesNotExist:
             return Response({"error": "Post not found"}, status=status.HTTP_404_NOT_FOUND)
 # whats happening here is that We are creating a LikePostAPIView class that extends the APIView class. We are adding a post method to handle the post request. We are getting the user_id and post_id from the request data. We are then getting the user and post objects from the database. We are then checking if the post has already been liked by the user. If the post has already been liked, we are unliking the post by removing the user from the set of people who have liked the post. If the post hasn't been liked, we are liking the post by adding the user to the set of people who have liked the post. We are also creating a notification for the author of the post.
