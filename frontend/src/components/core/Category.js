@@ -1,106 +1,72 @@
-import { useState, useEffect } from "react";
-import { Link, useParams } from "react-router-dom";
-import moment from "moment";
-import apiInstance from "../../utils/axios";
+import React from "react";
 import Header from "../partials/Header";
 import Footer from "../partials/Footer";
-import "../../styles/category.css";
+import { Link } from "react-router-dom";
+import "../../styles/category.css"; 
 
 function Category() {
-    const [posts, setPosts] = useState([]);
-    const [category, setCategory] = useState(null);
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState(null);
-    const { slug } = useParams();
-  
-    useEffect(() => {
-      const fetchData = async () => {
-        try {
-          const [categoryRes, postsRes] = await Promise.all([
-            apiInstance.get(`category/${slug}/`),
-            apiInstance.get(`post/category/posts/${slug}/`)
-          ]);
-          
-          if (!categoryRes.data.length || !postsRes.data.length) {
-            throw new Error('Category not found');
-          }
-  
-          setCategory(categoryRes.data[0]);
-          setPosts(postsRes.data);
-        } catch (err) {
-          setError(err.message);
-        } finally {
-          setLoading(false);
-        }
-      };
-  
-      fetchData();
-    }, [slug]);
-
-
-    if (loading) return <div className="loading">Loading...</div>;
-    if (error) return <div className="error">Error: {error}</div>;
-
     return (
-        <div className="category-container">
+        <div className="category-page">
             <Header />
-            
             <section className="category-header">
-                <div className="header-content">
-                    {category?.image && (
-                        <img 
-                            src={category.image} 
-                            alt={category.title} 
-                            className="header-image"
-                        />
-                    )}
-                    <h2 className="category-title">
-                        <i className="fas fa-th-large"></i> 
-                        {category?.title} ({posts.length} Articles)
+                <div className="header-container">
+                    <a href="#" className="header-image">
+                        <img src="assets/images/adv-3.png" alt="Advertisement" />
+                    </a>
+                    <h2 className="header-title">
+                        <i className="bi bi-grid-fill"></i> LifeStyle (16 Articles)
                     </h2>
                 </div>
             </section>
 
-            <section className="posts-section">
-                <div className="posts-grid">
-                    {posts.map((post) => (
-                        <div className="post-card" key={post.id}>
-                            <div className="card-image-container">
-                                <img 
-                                    src={post.image} 
-                                    alt={post.title} 
-                                    className="card-image"
-                                />
-                            </div>
-                            <div className="card-content">
-                                <h3 className="card-title">
-                                    <Link to={`/post/${post.slug}`} className="card-link">
-                                        {post.title}
-                                    </Link>
-                                </h3>
-                                <div className="post-meta">
-                                    <span>
-                                        <i className="fas fa-user"></i> {post.user?.full_name}
-                                    </span>
-                                    <span>
-                                        <i className="fas fa-calendar"></i> 
-                                        {moment(post.date).format("MMM DD, YYYY")}
-                                    </span>
-                                    <span>
-                                        <i className="fas fa-eye"></i> {post.view} Views
-                                    </span>
+            <section className="category-posts">
+                <div className="posts-container">
+                    <div className="posts-grid">
+                        {Array.from({ length: 16 }).map((_, index) => (
+                            <div className="post-card" key={index}>
+                                <div className="post-image">
+                                    <img
+                                        src="https://awcdn1.ahmad.works/writing/wp-content/uploads/2015/05/cheerful-loving-couple-bakers-drinking-coffee-PCAVA6B-2.jpg"
+                                        alt="Post"
+                                        style={{ width: "100%", height: "160px", objectFit: "cover" }}
+                                    />
                                 </div>
-                                <div className="post-stats">
-                                    <span>
-                                        <i className="fas fa-heart"></i> {post.likes_count}
-                                    </span>
-                                    <span>
-                                        <i className="fas fa-comment"></i> {post.comments_count}
-                                    </span>
+                                <div className="post-content">
+                                    <h4 className="post-title">
+                                        <Link to="/post-single" className="post-link">
+                                            7 common mistakes everyone makes while traveling
+                                        </Link>
+                                    </h4>
+                                    <ul className="post-meta">
+                                        <li>
+                                            <Link to="#" className="meta-link">
+                                                <i className="fas fa-user"></i> Louis Ferguson
+                                            </Link>
+                                        </li>
+                                        <li>
+                                            <i className="fas fa-calendar"></i> Mar 07, 2022
+                                        </li>
+                                        <li>
+                                            <i className="fas fa-eye"></i> 10 Views
+                                        </li>
+                                    </ul>
                                 </div>
                             </div>
+                        ))}
+                    </div>
+
+                    <nav className="pagination">
+                        <button className="pagination-button">
+                            <i className="fas fa-arrow-left"></i> Previous
+                        </button>
+                        <div className="pagination-pages">
+                            <button className="pagination-page active">1</button>
+                            <button className="pagination-page">2</button>
                         </div>
-                    ))}
+                        <button className="pagination-button">
+                            Next <i className="fas fa-arrow-right"></i>
+                        </button>
+                    </nav>
                 </div>
             </section>
 

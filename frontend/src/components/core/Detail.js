@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import Header from "../partials/Header";
 import Footer from "../partials/Footer";
-import { Link, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import apiInstance from "../../utils/axios";
 import moment from "moment";
 import Toast from "../../Plugin/Toast";
@@ -9,22 +9,28 @@ import "../../styles/detail.css"; // Create this CSS file
 
 function Detail() {
   const [post, setPost] = useState([]);
-  const [tags, setTags] = useState([]);
+  const [tags] = useState([]);
   const [createComment, setCreateComment] = useState({ full_name: "", email: "", comment: "" });
+  const { slug } = useParams();
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
-  const param = useParams();
 
-  const fetchPost = async () => {
-      const response = await apiInstance.get(`post/detail/${param.slug}/`);
+   const fetchPost = async () => {
+    try {
+      const response = await apiInstance.get(`post/detail/${slug}/`);
       setPost(response.data);
-
-      const tagArray = response.data?.tags?.split(",");
-      setTags(tagArray);
+    } catch (err) {
+      console.error(err);
+    }
   };
 
   useEffect(() => {
-      fetchPost();
+    fetchPost();
   }, []);
+
+  if (loading) return <div>Loading...</div>;
+  if (error) return <div>Error: {error}</div>;
 
   const handleCreateCommentChange = (event) => {
       setCreateComment({
